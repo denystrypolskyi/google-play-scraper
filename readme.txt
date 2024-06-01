@@ -1,6 +1,24 @@
+Opis:
+- Google Play Scraper to narzędzie do automatycznego zbierania szczegółowych informacji o aplikacjach oraz komentarzy 
+użytkowników z Google Play Store. Skrypt wykorzystuje Selenium WebDriver do interakcji z witryną, pozwalając na pobieranie 
+danych takich jak tytuł aplikacji, opis, ocena gwiazdkowa, liczba pobrań oraz komentarze użytkowników.
+
+Skrypt zwraca dane w formacie JSON, który zawiera następujące informacje:
+- title: Tytuł aplikacji
+- description: Opis aplikacji
+- image: URL obrazu aplikacji
+- starRating: Ocena gwiazdkowa aplikacji
+- contentRating: Ocena treści
+- downloads: Liczba pobrań
+- updatedOn: Data ostatniej aktualizacji
+- containsAds: Informacja czy aplikacja zawiera reklamy
+- inAppPurchases: Informacja o zakupach w aplikacji
+- releasedOn: Data wydania aplikacji
+- developer: Nazwa dewelopera
+- comments: Lista komentarzy użytkowników
+
 Instalacja wymaganych pakietów:
 - pip install selenium
-- pip install pyinstaller
 - pip install webdriver-manager
 
 Instrukcje uruchomienia:

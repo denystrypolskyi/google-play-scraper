@@ -13,7 +13,7 @@ from selenium.common.exceptions import (
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-class PlayStoreScraper:
+class GooglePlayScraper:
     def __init__(self, app_id, chrome_driver_path, desired_comment_count=2, timeout=5):
         self.app_id = app_id
         self.url = f'https://play.google.com/store/apps/details?id={app_id}&showAllReviews=true'
@@ -125,6 +125,5 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     
     app_id = input("Please enter the app ID: ")
-    scraper = PlayStoreScraper(app_id=app_id, chrome_driver_path='./chromedriver.exe')
+    scraper = GooglePlayScraper(app_id=app_id, chrome_driver_path='./chromedriver.exe')
     print(json.dumps(scraper.app_details, indent=2))
-    input("Press any key to exit...")
