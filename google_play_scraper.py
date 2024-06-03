@@ -8,13 +8,13 @@ from selenium.common.exceptions import (
     NoSuchElementException, 
     ElementClickInterceptedException, 
     TimeoutException,
-    WebDriverException
 )
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 
 class GooglePlayScraper:
-    def __init__(self, app_id, chrome_driver_path, desired_comment_count=2, timeout=5):
+    def __init__(self, app_id, chrome_driver_path, desired_comment_count=100, timeout=5):
         self.app_id = app_id
         self.url = f'https://play.google.com/store/apps/details?id={app_id}&showAllReviews=true'
         self.desired_comment_count = desired_comment_count
@@ -51,8 +51,10 @@ class GooglePlayScraper:
 
     def click_element(self, by, value):
         try:
-            self.wait.until(EC.element_to_be_clickable((by, value))).click()
-        except (TimeoutException, ElementClickInterceptedException, WebDriverException) as e:
+            element = self.wait.until(EC.element_to_be_clickable((by, value)))
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+            element.click()
+        except (TimeoutException, ElementClickInterceptedException) as e:
             logging.error(f"Error clicking element {value}: {e}")
 
     def scrape_app_details(self):
@@ -82,21 +84,13 @@ class GooglePlayScraper:
     def scrape_comments(self):
         comments = []
         current_comment_count = 0
-        last_height = self.driver.execute_script("return document.body.scrollHeight")
         
+        try:
+            self.click_element(By.XPATH, "//span[text()='See all reviews']")
+        except (NoSuchElementException, ElementClickInterceptedException) as e:
+                logging.error(f"Error clicking 'See all reviews': {e}")
+
         while current_comment_count < self.desired_comment_count:
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-            new_height = self.driver.execute_script("return document.body.scrollHeight")
-            
-            if new_height == last_height:
-                try:
-                    self.click_element(By.XPATH, "//span[text()='See all reviews']")
-                except NoSuchElementException:
-                    break
-                except ElementClickInterceptedException:
-                    break
-            
-            last_height = new_height
             elements_with_review_id = self.driver.find_elements(By.XPATH, "//*[@data-review-id]")
             
             for element in elements_with_review_id:
@@ -105,12 +99,16 @@ class GooglePlayScraper:
                 if element.get_attribute("data-review-id"):
                     try:
                         comment_text = element.find_element(By.XPATH, "following-sibling::*").text
-                        if comment_text.strip():
+                        if comment_text.strip() and comment_text.strip() not in comments:
                             comments.append(comment_text)
                             current_comment_count += 1
                     except NoSuchElementException:
                         continue
-        
+            
+            if current_comment_count < self.desired_comment_count:
+                self.driver.execute_script("arguments[0].scrollIntoView(false);", elements_with_review_id[-1])
+                time.sleep(2) 
+    
         return comments
 
     def scrape(self):
@@ -124,6 +122,7 @@ class GooglePlayScraper:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     
-    app_id = input("Please enter the app ID: ")
+    # app_id = input("Please enter the app ID: ")
+    app_id = "com.instagram.android"
     scraper = GooglePlayScraper(app_id=app_id, chrome_driver_path='./chromedriver.exe')
     print(json.dumps(scraper.app_details, indent=2))
