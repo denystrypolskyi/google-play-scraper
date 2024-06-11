@@ -22,7 +22,7 @@ Instalacja wymaganych pakietów:
 • pip install webdriver-manager
 
 Instrukcje uruchomienia:
-• Skrypt można uruchomić za pomocą komendy: python play_store_scraper.py
+• Skrypt można uruchomić za pomocą komendy: python google_play_scraper.py
 
 Ważna uwaga: 
 Wersja ChromeDriver musi odpowiadać zainstalowanej wersji Google Chrome. Obecnie jest to Version 125.0.6422.142 (Official Build) (64-bit).
