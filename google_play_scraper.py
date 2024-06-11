@@ -14,7 +14,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 
 class GooglePlayScraper:
-    def __init__(self, app_id, chrome_driver_path, desired_comment_count=100, timeout=5):
+    def __init__(self, app_id, chrome_driver_path, desired_comment_count=5, timeout=5):
         self.app_id = app_id
         self.url = f'https://play.google.com/store/apps/details?id={app_id}&showAllReviews=true'
         self.desired_comment_count = desired_comment_count
@@ -122,7 +122,7 @@ class GooglePlayScraper:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     
-    # app_id = input("Please enter the app ID: ")
-    app_id = "com.instagram.android"
-    scraper = GooglePlayScraper(app_id=app_id, chrome_driver_path='./chromedriver.exe')
+    app_id = input("Please enter the app ID: ")
+    desired_comment_count = int(input("Please enter the desired number of comments to scrape: "))
+    scraper = GooglePlayScraper(app_id=app_id, chrome_driver_path='./chromedriver.exe', desired_comment_count=desired_comment_count)
     print(json.dumps(scraper.app_details, indent=2))
