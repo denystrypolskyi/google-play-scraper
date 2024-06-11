@@ -16,7 +16,7 @@ import time
 class GooglePlayScraper:
     def __init__(self, app_id, chrome_driver_path, desired_comment_count=5, timeout=5):
         self.app_id = app_id
-        self.url = f'https://play.google.com/store/apps/details?id={app_id}&showAllReviews=true'
+        self.url = f'https://play.google.com/store/apps/details?id={app_id}&hl=pl'
         self.desired_comment_count = desired_comment_count
         self.timeout = timeout
 
@@ -66,18 +66,18 @@ class GooglePlayScraper:
             "image": self.get_element_attribute(By.CSS_SELECTOR, '[itemprop="image"]', 'src'),
             "starRating": self.get_element_text(By.XPATH, '//div[@itemprop="starRating"]').split("\n")[0],
             "contentRating": self.get_element_text(By.XPATH, '//span[@itemprop="contentRating"]'),
-            "downloads": self.get_element_text(By.XPATH, "//div[contains(text(), 'Downloads')]/preceding-sibling::*"),
-            "updatedOn": self.get_element_text(By.XPATH, "//div[contains(text(), 'Updated on')]/following-sibling::*"),
-            "containsAds": bool(self.get_element_text(By.XPATH, "//span[contains(text(), 'Contains ads')]")),
-            "inAppPurchases": bool(self.get_element_text(By.XPATH, "//span[contains(text(), 'In-app purchases')]"))
+            "downloads": self.get_element_text(By.XPATH, "//div[contains(text(), 'Pobrane')]/preceding-sibling::*"),
+            "updatedOn": self.get_element_text(By.XPATH, "//div[contains(text(), 'Ostatnia aktualizacja')]/following-sibling::*"),
+            "containsAds": bool(self.get_element_text(By.XPATH, "//span[contains(text(), 'Zawiera reklamy')]")),
+            "inAppPurchases": bool(self.get_element_text(By.XPATH, "//span[contains(text(), 'Zakupy w aplikacji')]"))
         }
 
-        self.click_element(By.XPATH, "//button[@aria-label='See more information on About this app']")
+        self.click_element(By.XPATH, "//button[contains(@aria-label, 'Zobacz więcej informacji')]")
         
-        details["releasedOn"] = self.get_visible_element_text(By.XPATH, "//*[contains(text(), 'Released on')]/following-sibling::*")
-        details["developer"] = self.get_visible_element_text(By.XPATH, "//*[contains(text(), 'Offered by')]/following-sibling::*")
+        details["releasedOn"] = self.get_visible_element_text(By.XPATH, "//*[contains(text(), 'Data premiery')]/following-sibling::*")
+        details["developer"] = self.get_visible_element_text(By.XPATH, "//*[contains(text(), 'Oferowany przez')]/following-sibling::*")
         
-        self.click_element(By.XPATH, "//button[@aria-label='Close about app dialog']")
+        self.click_element(By.XPATH, "//button[contains(@aria-label, 'Zamknij okno')]")
         
         return details
 
@@ -86,9 +86,9 @@ class GooglePlayScraper:
         current_comment_count = 0
         
         try:
-            self.click_element(By.XPATH, "//span[text()='See all reviews']")
+            self.click_element(By.XPATH, "//span[text()='Pokaż wszystkie opinie']")
         except (NoSuchElementException, ElementClickInterceptedException) as e:
-                logging.error(f"Error clicking 'See all reviews': {e}")
+                logging.error(f"Error clicking 'Pokaż wszystkie opinie': {e}")
 
         while current_comment_count < self.desired_comment_count:
             elements_with_review_id = self.driver.find_elements(By.XPATH, "//*[@data-review-id]")
@@ -122,7 +122,7 @@ class GooglePlayScraper:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     
-    app_id = input("Please enter the app ID: ")
-    desired_comment_count = int(input("Please enter the desired number of comments to scrape: "))
+    app_id = input("Proszę podaj identyfikator aplikacji: ")
+    desired_comment_count = int(input("Proszę podaj pożądaną liczbę komentarzy do pobrania: "))
     scraper = GooglePlayScraper(app_id=app_id, chrome_driver_path='./chromedriver.exe', desired_comment_count=desired_comment_count)
-    print(json.dumps(scraper.app_details, indent=2))
+    print(json.dumps(scraper.app_details, indent=2, ensure_ascii=False))
