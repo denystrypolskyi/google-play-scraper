@@ -1,0 +1,6 @@
+# Ignore virtual environment directory
+venv/
+
+# Ignore ChromeDriver executables
+chromedriver
+chromedriver.exe
