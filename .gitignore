@@ -1,3 +1,5 @@
 # Ignore ChromeDriver executables
 chromedriver
 chromedriver.exe
+output
+__pycache__
