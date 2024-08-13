@@ -41,5 +41,5 @@ A Python script to retrieve detailed information and user comments about apps fr
    Place the downloaded chromedriver executable in the project directory.
 
 ### Usage
-- Run the script: <code>python google_play_scraper.py</code>
+- Run the script: <code>python main.py</code>
 - Follow the instructions in the console to provide the app ID and the desired number of comments.
