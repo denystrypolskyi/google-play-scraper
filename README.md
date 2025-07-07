@@ -2,24 +2,6 @@
 
 A Python script to retrieve detailed information and user comments about apps from the Google Play Store using Selenium.
 
-## 📋 Features
-
-### App Details:
-- **Title**
-- **Description**
-- **Image**
-- **Rating**
-- **Age Category**
-- **Number of Downloads**
-- **Last Update Date**
-- **Contains Ads**
-- **In-App Purchases**
-- **Release Date**
-- **Developer Name**
-
-### Comments:
-- **Number of Comments**: Retrieve a specified number of user comments.
-
 ## 🛠️ Tech Stack
 
 <div>
